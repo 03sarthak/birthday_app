@@ -6,7 +6,7 @@ class Birthday(db.Model):
     __tablename__ = 'birthdays'
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(100), nullable = False)
+    name = db.Column(db.String(100), nullable = False, unique = True)
     dob = db.Column(db.Date, nullable = False)
 
 
@@ -14,5 +14,5 @@ class Birthday(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'dob': self.dob.stfrftime('%Y-%m-%d')
+            'dob': self.dob.strftime('%Y-%m-%d')
         }

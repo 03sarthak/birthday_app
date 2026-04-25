@@ -15,7 +15,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    start_scheuduler(app)
+    start_scheduler(app)
 
 
 
@@ -26,7 +26,7 @@ def get_birthdays():
     return jsonify([birthday.to_dict() for birthday in birthdays]), 200
 
 
-@app.route('birthdays/<int:id>', methods = ['GET'])
+@app.route('/birthdays/<int:id>', methods = ['GET'])
 def get_birthday(id):
     birthday = Birthday.query.get_or_404(id)
 
@@ -46,6 +46,12 @@ def add_birthday():
     except ValueError:
         return jsonify({'error': 'Invalid date format, use YYYY-MM-DD'}), 400
     
+    existing = Birthday.query.filter(
+        db.func.lower(Birthday.name) == data['name'].lower()
+    ).first()
+
+    if existing:
+        return jsonify({'error': f"'{data['name']}' already exists"}), 409
 
     birthday = Birthday(name = data['name'], dob = dob)
     db.session.add(birthday)
@@ -60,6 +66,12 @@ def update_birthday(id):
     data = request.get_json()
 
     if 'name' in data:
+        existing = Birthday.query.filter(
+            db.func.lower(Birthday.name) == data['name'].lower(),
+            Birthday.id != id 
+        ).first()
+        if existing:
+            return jsonify({'error': f"'{data['name']}' already exists"}), 409
         birthday.name = data['name']
 
     if 'dob' in data:

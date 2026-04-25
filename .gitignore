@@ -16,3 +16,7 @@ frontend/android/build/
 
 # VS Code
 .vscode/
+
+# Firebase credentials
+backend/firebase-credentials.json
+frontend/android/app/google-services.json

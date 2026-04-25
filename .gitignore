@@ -8,5 +8,11 @@ __pycache__/
 frontend/node_modules/
 frontend/.env
 
+# Android build files
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/android/app/.cxx/
+frontend/android/build/
+
 # VS Code
 .vscode/

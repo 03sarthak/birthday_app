@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
 
 import HomeScreen from './src/screens/HomeScreen';
 import AddBirthdayScreen from './src/screens/AddBirthdayScreen';
@@ -12,7 +13,6 @@ const Stack = createStackNavigator();
 
 const App = () => {
   useEffect(() => {
-    // Request notification permission
     requestNotificationPermission();
 
     // Subscribe to birthday reminders topic
@@ -22,22 +22,34 @@ const App = () => {
 
     // Handle foreground notifications
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert(
-        remoteMessage.notification?.title || '🎂 Birthday Reminder',
-        remoteMessage.notification?.body || ''
-      );
+      // Display notification using notifee
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title || '🎂 Birthday Reminder',
+        body: remoteMessage.notification?.body || '',
+        android: {
+          channelId: 'birthday_channel',
+          pressAction: { id: 'default' },
+        },
+      });
     });
 
     return unsubscribe;
   }, []);
 
   const requestNotificationPermission = async () => {
+    // Request Firebase messaging permission
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
+      // Create notification channel for Android
+      await notifee.createChannel({
+        id: 'birthday_channel',
+        name: 'Birthday Reminders',
+        importance: 4, // HIGH
+      });
       console.log('Notification permission granted');
     }
   };

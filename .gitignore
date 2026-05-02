@@ -24,3 +24,6 @@ frontend/android/app/google-services.json
 # Keystore
 frontend/android/app/birthday-app.keystore
 frontend/android/gradle.properties
+
+# Virtual environment
+backend/birthday_venv/

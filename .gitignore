@@ -20,3 +20,7 @@ frontend/android/build/
 # Firebase credentials
 backend/firebase-credentials.json
 frontend/android/app/google-services.json
+
+# Keystore
+frontend/android/app/birthday-app.keystore
+frontend/android/gradle.properties

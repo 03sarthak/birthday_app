@@ -2,17 +2,20 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import date
 from models import Birthday
 from notifications import send_push_notification
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def check_birthdays(app):
     with app.app_context():
+        logger.info("Running birthday check...")
         today = date.today()
         birthdays = Birthday.query.all()
 
         for birthday in birthdays:
-            # Get this year's birthday date
             next_birthday = birthday.dob.replace(year=today.year)
 
-            # If birthday already passed this year, check next year
             if next_birthday < today:
                 next_birthday = next_birthday.replace(year=today.year + 1)
 
@@ -50,7 +53,8 @@ def start_scheduler(app):
         func=check_birthdays,
         args=[app],
         trigger='cron',
-        hour=9,        # Runs every day at 9:00 AM
+        hour=9,
         minute=0
     )
     scheduler.start()
+    logger.info("Scheduler started successfully!")

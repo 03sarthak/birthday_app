@@ -95,6 +95,9 @@ def delete_birthday(id):
     return jsonify({'message': f'{birthday.name} deleted successfully'}), 200
 
 
+@app.route('/config', methods=['GET'])
+def config():
+    return jsonify({'database': app.config['SQLALCHEMY_DATABASE_URI']}), 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

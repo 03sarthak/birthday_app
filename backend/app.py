@@ -92,10 +92,6 @@ def delete_birthday(id):
     db.session.commit()
     return jsonify({'message': f'{birthday.name} deleted successfully'}), 200
 
-# Config route for debugging
-@app.route('/config', methods=['GET'])
-def config():
-    return jsonify({'database': app.config['SQLALCHEMY_DATABASE_URI']}), 200
 
 # ─── Run ───────────────────────────────────────────────
 if __name__ == '__main__':
